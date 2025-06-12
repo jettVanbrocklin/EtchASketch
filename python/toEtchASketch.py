@@ -4,6 +4,11 @@ import serial
 import time
 from svgpathtools import svg2paths
 
+# for depth first search
+from DFS import Node
+from DFS import StackFrontier
+from DFS import NodeArray
+
 # Set your serial port and baud rate
 SERIAL_PORT = 'COM9'       # Change this to your Arduino's port
 BAUD_RATE = 9600
@@ -88,6 +93,9 @@ while cv2.waitKey(1) & 0xFF == ord('s'):
 pixels = largest['pixels']
 y_coords = pixels[:, 0]  # all rows, first column (y values)
 x_coords = pixels[:, 1]  # all rows, second column (x values)
+
+
+
 
 with serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1) as arduino:
     time.sleep(2)  # wait for connection
