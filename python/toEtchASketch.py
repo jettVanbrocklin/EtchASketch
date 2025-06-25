@@ -4,10 +4,9 @@ import serial
 import time
 from svgpathtools import svg2paths
 
-# for depth first search
-from DFS import Node
-from DFS import StackFrontier
-from DFS import NodeArray
+
+import pathFinder
+import iterativePathFinder
 
 # Set your serial port and baud rate
 SERIAL_PORT = 'COM9'       # Change this to your Arduino's port
@@ -17,7 +16,7 @@ scale_proportion = 1
 screen_height = 250
 screen_width = 330
 
-image = cv2.imread("images/Dawg.jpg")
+image = cv2.imread("images/line.jpg")
 if image is None:
     print("Image failed to load. Check the file path.")
     exit()
@@ -49,7 +48,9 @@ resized = cv2.resize(thresh, (scaled_width, scaled_height))
 
 #Now I need to find the 5 largest pixel clusters
 num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(resized, connectivity=8)
-
+full_string = np.array2string(labels, threshold=np.inf)
+with open("label_array.txt", "w") as f:
+    f.write(str(full_string))
 # Each "label" represents a separate cluster
 # stats: [x, y, width, height, area]
 # centroids: [cx, cy] for each component
@@ -57,7 +58,7 @@ num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(resized,
 # Step 3: Filter out small clusters if needed and sort by area
 min_area = 100  # adjust as needed
 clusters = []
-for i in range(1, num_labels):  # skip label 0 (background)
+for i in range(0, num_labels):  # skip label 0 (background)
     area = stats[i, cv2.CC_STAT_AREA]
     if area >= min_area:
         clusters.append((i, area, tuple(centroids[i])))
@@ -76,7 +77,7 @@ for label_id, area, centroid in clusters:
     })
 
 # Example: Print info of largest cluster
-largest = cluster_pixel_locations[0]
+largest = cluster_pixel_locations[1]
 print("Largest Cluster Area:", largest['area'])
 print("Centroid:", largest['centroid'])
 print("Sample Pixel Locations:", largest['pixels'][:5])
@@ -94,27 +95,32 @@ pixels = largest['pixels']
 y_coords = pixels[:, 0]  # all rows, first column (y values)
 x_coords = pixels[:, 1]  # all rows, second column (x values)
 
+# for i in range(1, 3): # Grab the 3 largest pixel locations that aren't the background
 
+    
+path = iterativePathFinder.findPath(x_coords, y_coords, x_coords[0], y_coords[0])
+#print(path)
+with open("imageGcode.txt", "w") as f:
+    f.write(str(path))
 
+# with serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1) as arduino:
+#     time.sleep(2)  # wait for connection
+#     for i in range(len(largest['pixels'])):
+#     #for i in range(50):
+#         data = f"{x_coords[i]},{y_coords[i]}\n"
+#         print(f"Sending: {data.strip()}")
+#         arduino.write(data.encode())
+#         if cv2.waitKey(1) & 0xFF == ord('q'):
+#             break
 
-with serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1) as arduino:
-    time.sleep(2)  # wait for connection
-    for i in range(len(largest['pixels'])):
-    #for i in range(50):
-        data = f"{x_coords[i]},{y_coords[i]}\n"
-        print(f"Sending: {data.strip()}")
-        arduino.write(data.encode())
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+#         if arduino.in_waiting:
+#             response = arduino.readline().decode().strip()
+#             while response == prev_response:
+#                time.sleep(0.05)
+#                response = arduino.readline().decode().strip()
+#             print(f"Arduino says: {response}")
 
-        if arduino.in_waiting:
-            response = arduino.readline().decode().strip()
-            while response == prev_response:
-               time.sleep(0.05)
-               response = arduino.readline().decode().strip()
-            print(f"Arduino says: {response}")
-
-        time.sleep(0.1)
+#         time.sleep(0.1)
 
 
 cv2.waitKey(0)
