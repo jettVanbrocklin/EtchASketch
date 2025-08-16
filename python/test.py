@@ -1,22 +1,16 @@
 import pathFinder
 import numpy as np
 import iterativePathFinder
+import cv2
 
-# Define your 4x4 array using a list of lists
-# Replace the values below with 1s and 0s as you like
-test3 = [
-    [1, 1, 1, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1]
-]
+canvas = 255 * np.ones((250,330,3), dtype="uint8") # 250 by 330 canvas, set all pixels
+cv2.imshow("Canvas", canvas)
 
+prev_key = -1
+while(1):
+    key = cv2.waitKeyEx(1)
+    if(prev_key != key):
+        print(key)
 
-
-
-# Convert it to a NumPy array
-array = np.array(test3)
-y_coords, x_coords = np.nonzero(array == 1)
-
-print(pathFinder.findPath(x_coords, y_coords, x_coords[0], y_coords[0]))
 
 
