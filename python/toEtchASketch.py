@@ -18,8 +18,7 @@ LEFT_ARROW_CODE = 2424832
 RIGHT_ARROW_CODE = 2555904
 
 
-
-
+#Testing key-codes for arrow keys
     # elif key == 2490368:
     #     print("Up arrow pressed")
     # elif key == 2621440:
@@ -133,49 +132,6 @@ for i in range(0, len(clusters)):
     y_values.append(pixels_in_cluster[i][:, 0])
     x_values.append(pixels_in_cluster[i][:,1])
     paths.append(iterativePathFinder.findPath(x_values[i], y_values[i], x_values[i][0], y_values[i][0]))
-
-# for i, cluster_index in enumerate(range(1, len(clusters))):
-#     pixels_in_cluster.append(cluster_pixel_locations[cluster_index]['pixels'])
-#     y_values.append(pixels_in_cluster[i][:, 0])
-#     x_values.append(pixels_in_cluster[i][:,1])
-#     paths.append(iterativePathFinder.findPath(x_values[i], y_values[i], x_values[i][0], y_values[i][0]))
-
-# I need to send the pixel locations of the three largest pixel clusters
-# Send over serial
-
-#wait until start
-
-
-# pixels = largest['pixels']
-# y_coords = pixels[:, 0]  # all rows, first column (y values)
-# x_coords = pixels[:, 1]  # all rows, second column (x values)
-
-# # for i in range(1, 3): # Grab the 3 largest pixel locations that aren't the background
-
-    
-# path = iterativePathFinder.findPath(x_coords, y_coords, x_coords[0], y_coords[0])
-# print(path)
-# with open("imageGcode.txt", "w") as f:
-#     f.write(str(path))
-
-# with serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1) as arduino:
-#     time.sleep(2)  # wait for connection
-#     for i in range(len(largest['pixels'])):
-#     #for i in range(50):
-#         data = f"{x_coords[i]},{y_coords[i]}\n"
-#         print(f"Sending: {data.strip()}")
-#         arduino.write(data.encode())
-#         if cv2.waitKey(1) & 0xFF == ord('q'):
-#             break
-
-#         if arduino.in_waiting:
-#             response = arduino.readline().decode().strip()
-#             while response == prev_response:
-#                time.sleep(0.05)
-#                response = arduino.readline().decode().strip()
-#             print(f"Arduino says: {response}")
-
-#         time.sleep(0.1)
 
 print("Number of paths: " + str(len(paths)))
 
